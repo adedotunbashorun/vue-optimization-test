@@ -1,5 +1,8 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import NProgress from 'nprogress';
+
+import '../../node_modules/nprogress/nprogress.css'
 
 Vue.use(VueRouter)
 
@@ -7,17 +10,30 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: () => import('../views/Home.vue')
+    component: () => import('../pages/Home.vue')
   },
   {
     path: '/about',
     name: 'about',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../pages/About.vue')
   }
-]
+];
 
 const router = new VueRouter({
+  mode: 'history',
+  hash: false,
   routes
-})
+});
 
-export default router
+router.beforeResolve((to, from, next) => {
+  if (to.name) {
+      NProgress.start()
+  }
+  next()
+});
+
+router.afterEach(() => {
+  NProgress.done()
+});
+
+export default router;
